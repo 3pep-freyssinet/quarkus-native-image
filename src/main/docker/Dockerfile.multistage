@@ -30,4 +30,4 @@ RUN chmod 775 . ./application \
 EXPOSE 8080
 USER 1001
 
-CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+CMD ["./application_", "-Dquarkus.http.host=0.0.0.0"]
