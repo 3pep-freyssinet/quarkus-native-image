@@ -6,7 +6,7 @@
 ##
 ##
 ## Stage 1 : build with maven builder image with native capabilities
-FROM quay.io/quarkus/ubi-quarkus-graalvmce-builder-image:22.3-java17 AS build
+FROM gunnarmorling/quarkus-on-render:latest
 COPY ./pom.xml ./pom.xml
 COPY ./src ./src
 RUN mvn -Pnative package -DskipTests
