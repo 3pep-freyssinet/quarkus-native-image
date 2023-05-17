@@ -6,7 +6,7 @@
 ##
 ##
 ## Stage 1 : build with maven builder image with native capabilities
-FROM quay.io/quarkus/centos-quarkus-maven:19.2.1 AS build
+FROM quay.io/quarkus/ubi-quarkus-graalvmce-builder-image:22.3-java17 AS build
 COPY ./pom.xml ./pom.xml
 COPY ./src ./src
 RUN mvn -Pnative package -DskipTests
