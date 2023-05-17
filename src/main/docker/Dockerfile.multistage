@@ -6,30 +6,14 @@
 ##
 ##
 ## Stage 1 : build with maven builder image with native capabilities
-FROM quay.io/quarkus/ubi-quarkus-graalvmce-builder-image:22.3-java17 AS build
-COPY --chown=quarkus:quarkus mvnw /code/mvnw
-COPY --chown=quarkus:quarkus .mvn /code/.mvn
-COPY --chown=quarkus:quarkus pom.xml /code/
-USER quarkus
-WORKDIR /code
-RUN ./mvnw -B org.apache.maven.plugins:maven-dependency-plugin:3.1.2:go-offline
-COPY src /code/src
-RUN ./mvnw package -Pnative
+FROM quay.io/quarkus/centos-quarkus-maven:19.2.1 AS build
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+RUN mvn -Pnative package -DskipTests
 
-## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+FROM registry.access.redhat.com/ubi8/ubi-minimal
 WORKDIR /work/
-COPY --from=build /code/target/*-runner ./application
-
-# set up permissions for user `1001`
-RUN chmod 775 . ./application \
-  && chown -R 1001 . \
-  && chmod -R "g+rwX" . \
-  && chown -R 1001:root .
-
+COPY --from=build /project/target/*-runner /work/application
+RUN chmod 775 /work
 EXPOSE 8080
-USER 1001
-
-#CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
-#ENTRYPOINT ["echo", "Hello, Darwin"]
-ENTRYPOINT ["quarkus-hibernate-2.15-runner.exe", "-Dquarkus.http.host=0.0.0.0"]
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
