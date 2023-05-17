@@ -31,4 +31,5 @@ EXPOSE 8080
 USER 1001
 
 #CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
-ENTRYPOINT ["echo", "Hello, Darwin"]
+#ENTRYPOINT ["echo", "Hello, Darwin"]
+ENTRYPOINT ["quarkus-hibernate-2.15-runner.exe", "-Dquarkus.http.host=0.0.0.0"]
